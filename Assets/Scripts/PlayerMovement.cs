@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -53,9 +54,9 @@ public class PlayerMovement : MonoBehaviour
             Vector2 dir = ((Vector2)Input.mousePosition - vMouseDown).normalized;
             rb.velocity = new Vector3(dir.x, 0, dir.y) * speed;
 
-            //Quaternion quaternion = Quaternion.LookRotation();
-            //Vector3 v = Manager.manager.QuaternionToEuler(quaternion);
-            //transform.eulerAngles = new Vector3(0, v.x,0);
+            Quaternion quaternion = Quaternion.LookRotation(new Vector3(dir.x,0, dir.y));
+
+            transform.DORotateQuaternion(quaternion, .5f);
         }
         else if (Input.GetMouseButtonUp(0))
         {

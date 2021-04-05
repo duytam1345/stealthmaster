@@ -34,7 +34,6 @@ public class Level : ScriptableObject
     {
         win = false;
         leftEnemy = Random.Range(1, 5);
-        Debug.Log(leftEnemy);
         for (int i = 0; i < leftEnemy; i++)
         {
             Vector3 pos = new Vector3(Random.Range(-6f, 6f), .5f, Random.Range(4.5f, -9f));
