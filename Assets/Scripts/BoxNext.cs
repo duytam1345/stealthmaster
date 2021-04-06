@@ -8,7 +8,7 @@ public class BoxNext : MonoBehaviour
     {
         if(collider.tag =="Player")
         {
-            Manager.manager.LoadNextRound();
+            Manager.manager.LoadNext();
         }
     }
 }

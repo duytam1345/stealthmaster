@@ -31,6 +31,8 @@ public class EnemyMovement : MonoBehaviour
 
     public float delayAttack;
 
+    public GameObject exclmationMark;
+
     void Start()
     {
         model = transform.Find("Model");
@@ -44,10 +46,21 @@ public class EnemyMovement : MonoBehaviour
         spriteSight = model.transform.Find("Sprite Sight").GetComponentInChildren<SpriteRenderer>();
 
         player = FindObjectOfType<PlayerMovement>();
+
+        if (!exclmationMark)
+        {
+            exclmationMark = Instantiate(Resources.Load("exclmation mark") as GameObject, GameObject.Find("Canvas").transform);
+        }
+        exclmationMark.SetActive(false);
     }
 
     void Update()
     {
+        if (exclmationMark)
+        {
+            exclmationMark.GetComponent<RectTransform>().position = Camera.main.WorldToScreenPoint(model.position + Vector3.up);
+        }
+
         timeToFindPlayer -= Time.deltaTime;
         if (timeToFindPlayer <= 0)
         {
@@ -58,12 +71,15 @@ public class EnemyMovement : MonoBehaviour
         switch (typeMoveEnemy)
         {
             case TypeMoveEnemy.MoveAround:
+                exclmationMark.SetActive(false);
                 Move();
                 break;
             case TypeMoveEnemy.MoveToLastPosPlayer:
+                exclmationMark.SetActive(true);
                 MoveToLastPosPlayer();
                 break;
             case TypeMoveEnemy.MoveToPlayer:
+                exclmationMark.SetActive(true);
                 MoveToPlayer();
                 break;
         }
@@ -71,6 +87,11 @@ public class EnemyMovement : MonoBehaviour
 
     void Move()
     {
+        if(wayPoints.Count<=0)
+        {
+            return;
+        }
+
         if (Vector3.Distance(model.position, wayPoints[currentIWayPoint].position) > .1f)
         {
             if (LookAt(wayPoints[currentIWayPoint].position))

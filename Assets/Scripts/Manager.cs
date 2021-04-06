@@ -1,7 +1,9 @@
+using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class Manager : MonoBehaviour
 {
@@ -10,6 +12,10 @@ public class Manager : MonoBehaviour
     public Level level;
 
     public bool pause;
+
+    UICanvas ui;
+
+    public int money;
 
     void Awake()
     {
@@ -27,15 +33,21 @@ public class Manager : MonoBehaviour
 
     // Level _ tao map_ tao quai
 
+    void Start()
+    {
+        ui = FindObjectOfType<UICanvas>();
+    }
+
     public void CheckWinLevel()
     {
         if (!level.win)
         {
-            level.leftEnemy--;
+            level.remainEnemy--;
 
-            if (level.leftEnemy <= 0)
+            SetTextRemainEnemy();
+
+            if (level.remainEnemy <= 0)
             {
-                level.win = true;
                 OpenDoor();
             }
         }
@@ -58,12 +70,94 @@ public class Manager : MonoBehaviour
         }
     }
 
-    public void LoadNextRound()
+    public void LoadNext()
     {
-        pause = true;
-        SceneManager.LoadScene(0);
+        if (level.indexCurrentRound == level.maxRound)
+        {
+            StartCoroutine(LoadNextLevelCo());
+        }
+        else
+        {
+            StartCoroutine(LoadNextRoundCo());
+        }
     }
 
+    IEnumerator LoadNextRoundCo()
+    {
+        pause = true;
+
+        yield return FadeCo();
+
+        pause = false;
+    }
+
+    IEnumerator LoadNextLevelCo()
+    {
+        if (level.nameLevel == "First")
+        {
+            ui.panelTutorialComplete.SetActive(true);
+        }
+
+        pause = true;
+
+        yield return new WaitForSeconds(.5f);
+
+        ui.nextLevelButton.SetActive(true);
+    }
+
+    public void Fade()
+    {
+        StartCoroutine(FadeCo());
+    }
+
+    IEnumerator FadeCo()
+    {
+        Image img = GameObject.Find("Fade Image").GetComponent<Image>();
+
+        img.DOFade(1, 1);
+        yield return new WaitForSeconds(1); //fade out
+
+        level.SetNewRound();
+
+        FindObjectOfType<PlayerMovement>().transform.position = new Vector3(0, .5f, -8.5f);
+
+        yield return new WaitForSeconds(.5f);//reset map time
+
+        ui.nextLevelButton.SetActive(false);
+
+        img.DOFade(0, 1);
+        yield return new WaitForSeconds(1);//fade in
+    }
+
+    public void SetTextRemainEnemy()
+    {
+        GameObject.Find("TextRemainEnemy").GetComponent<Text>().text = level.remainEnemy.ToString();
+    }
+
+    public void ShowContract()
+    {
+
+    }
+
+    public void HideContract()
+    {
+
+    }
+
+    public void LoadNextLevel()
+    {
+
+    }
+
+    public void SetTextMoney()
+    {
+        ui.textMoney.text = money.ToString();
+    }
+
+    public void TakeMoney(int i)
+    {
+        money += i;
+    }
 
     public Vector3 QuaternionToEuler(Quaternion q)
     {

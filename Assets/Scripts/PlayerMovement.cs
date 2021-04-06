@@ -50,13 +50,16 @@ public class PlayerMovement : MonoBehaviour
             imageInput.gameObject.SetActive(true);
         }
         else if (Input.GetMouseButton(0))
-        { 
+        {
             Vector2 dir = ((Vector2)Input.mousePosition - vMouseDown).normalized;
             rb.velocity = new Vector3(dir.x, 0, dir.y) * speed;
 
-            Quaternion quaternion = Quaternion.LookRotation(new Vector3(dir.x,0, dir.y));
+            if (dir != Vector2.zero)
+            {
+                Quaternion quaternion = Quaternion.LookRotation(new Vector3(dir.x, 0, dir.y));
 
-            transform.DORotateQuaternion(quaternion, .5f);
+                transform.DORotateQuaternion(quaternion, .5f);
+            }
         }
         else if (Input.GetMouseButtonUp(0))
         {

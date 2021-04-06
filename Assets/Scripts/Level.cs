@@ -5,40 +5,73 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "Level", menuName = "Level")]
 public class Level : ScriptableObject
 {
-    public enum TypeLevel
+    public string nameLevel;
+    public enum TypeRound
     {
-        _1, //Fight_TakeItem X3
-        _2, //Fight_Fight_TakeItem + Fight_TakeItem X2
-        _3, //Fight_Fight_TakeItem  X2 + Fight_TakeItem
-        _4, //Fight_Fight_TakeItem  X3
-        _5, //Fight_Fight_TakeItem  X4
+        Fight,
+        Item
     }
 
-    public TypeLevel typeLevel;
+    public List<TypeRound> typeRounds;
 
-    public int startLeftEnemy;
-    public int leftEnemy;
+    public int[] startRemainEnemy;
+    public int remainEnemy;
 
     public bool hasBoss;
 
+    public int maxRound;
     public int indexCurrentRound;
 
     public bool win;
 
     public void SetStart()
     {
+        if(indexCurrentRound == 0)
+        {
+            Transform t = GameObject.Find("Process Level Content").transform;
+
+            foreach (Transform item in t)
+            {
+                Destroy(item.gameObject);
+            }
+
+            foreach (var item in typeRounds)
+            {
+                if(item == TypeRound.Fight)
+                {
+                    GameObject g = Instantiate(Resources.Load("UI/Image Process Level Fight") as GameObject, t);
+                }
+                else
+                {
+                    GameObject g = Instantiate(Resources.Load("UI/Image Process Level Take Item") as GameObject, t);
+                }
+            }
+        }
+
         SetNewRound();
     }
 
     public void SetNewRound()
     {
-        win = false;
-        leftEnemy = Random.Range(1, 5);
-        for (int i = 0; i < leftEnemy; i++)
+        indexCurrentRound++;
+
+        if (indexCurrentRound > maxRound)
         {
-            Vector3 pos = new Vector3(Random.Range(-6f, 6f), .5f, Random.Range(4.5f, -9f));
-            GameObject e = Instantiate(Resources.Load("Enemy") as GameObject, pos, Quaternion.identity);
+            Manager.manager.LoadNextLevel();
         }
+
+        win = false;
+
+        remainEnemy = startRemainEnemy[indexCurrentRound - 1];
+
+        Manager.manager.SetTextRemainEnemy();
+
+        if (GameObject.Find("Map").transform.childCount > 0)
+        {
+            Destroy(GameObject.Find("Map").transform.GetChild(0).gameObject);
+        }
+
+        GameObject g = Instantiate(Resources.Load("Level/" + nameLevel+indexCurrentRound) as GameObject, GameObject.Find("Map").transform);
     }
 
     void OnEnable()
