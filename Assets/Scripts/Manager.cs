@@ -9,13 +9,27 @@ public class Manager : MonoBehaviour
 {
     public static Manager manager;
 
+    public Level[] levels;
     public Level level;
 
     public bool pause;
 
-    UICanvas ui;
+    public bool rolling;
+
+    public UICanvas ui;
 
     public int money;
+
+    public bool selecNewItem;
+
+    public enum Item
+    {
+        Money,
+        Hp,
+        Arrmor,
+        Weapon,
+        Speed
+    }
 
     void Awake()
     {
@@ -29,12 +43,7 @@ public class Manager : MonoBehaviour
         }
 
         DontDestroyOnLoad(gameObject);
-    }
 
-    // Level _ tao map_ tao quai
-
-    void Start()
-    {
         ui = FindObjectOfType<UICanvas>();
     }
 
@@ -70,6 +79,12 @@ public class Manager : MonoBehaviour
         }
     }
 
+
+    public void SetStart()
+    {
+        level.SetStart();
+        ShowContract();
+    }
     public void LoadNext()
     {
         if (level.indexCurrentRound == level.maxRound)
@@ -86,7 +101,28 @@ public class Manager : MonoBehaviour
     {
         pause = true;
 
+        FocusContract();
+
+        yield return new WaitForSeconds(1);
+
+        RectTransform rect = ui.processLevelContent.GetChild(level.indexCurrentRound - 1).GetComponent<RectTransform>();
+
+        rect.DOShakeScale(.5f);
+
+        yield return new WaitForSeconds(.25f);
+
+        rect.GetComponent<Image>().color = Color.red;
+
+        yield return new WaitForSeconds(.25f);
+
+        UnFocusContract();
+
+        yield return new WaitForSeconds(1.5f);
+
         yield return FadeCo();
+
+        ShowContract();
+        HideContractCo(2);
 
         pause = false;
     }
@@ -127,6 +163,11 @@ public class Manager : MonoBehaviour
 
         img.DOFade(0, 1);
         yield return new WaitForSeconds(1);//fade in
+
+        if (selecNewItem)
+        {
+            RandomItem();
+        }
     }
 
     public void SetTextRemainEnemy()
@@ -136,17 +177,54 @@ public class Manager : MonoBehaviour
 
     public void ShowContract()
     {
-
+        ui.processLevelContent.GetChild(level.indexCurrentRound - 1).GetComponent<Image>().color = Color.yellow;
+        ui.panelContract.GetComponent<RectTransform>().DOAnchorPos3DY(0, 1, false);
     }
 
     public void HideContract()
     {
+        ui.panelContract.GetComponent<RectTransform>().DOAnchorPos3DY(250, 1, false);
+    }
+    public void HideContract(float t)
+    {
+        StartCoroutine(HideContractCo(t));
+    }
+    IEnumerator HideContractCo(float t)
+    {
+        yield return new WaitForSeconds(t);
+        ui.panelContract.GetComponent<RectTransform>().DOAnchorPos3DY(250, 1, false);
+    }
 
+    public void FocusContract()
+    {
+        ui.panelContract.GetComponent<RectTransform>().DOAnchorPos3DY(-200, 1, false);
+        ui.panelContract.GetComponent<RectTransform>().DOScaleX(1.5f, 1);
+        ui.panelContract.GetComponent<RectTransform>().DOScaleY(1.5f, 1);
+    }
+
+    public void UnFocusContract()
+    {
+        ui.panelContract.GetComponent<RectTransform>().DOAnchorPos3DY(-0, 1, false);
+        ui.panelContract.GetComponent<RectTransform>().DOScaleX(1, 1);
+        ui.panelContract.GetComponent<RectTransform>().DOScaleY(1, 1);
     }
 
     public void LoadNextLevel()
     {
+        bool b = false;
+        foreach (Level item in levels)
+        {
+            if (b)
+            {
+                level = item;
+                return;
+            }
 
+            if (level == item)
+            {
+                b = true;
+            }
+        }
     }
 
     public void SetTextMoney()
@@ -157,6 +235,226 @@ public class Manager : MonoBehaviour
     public void TakeMoney(int i)
     {
         money += i;
+        SetTextMoney();
+    }
+
+    public void RandomItem()
+    {
+        //selecNewItem = false;
+        //ShowSelectItem();
+        //StartCoroutine(RandomItemCo());
+    }
+
+    IEnumerator RandomItemCo()
+    {
+        pause = true;
+        rolling = true;
+
+        float t = .5f;
+
+        Item item1 = Item.Arrmor;
+        Item item2 = Item.Arrmor;
+        Item item3 = Item.Arrmor;
+
+        int r = 0;
+
+        while (t > 0)
+        {
+            t -= .1f;
+
+            r = Random.Range(0, 5);
+            item1 = (Item)r;
+
+            r = Random.Range(0, 5);
+            item2 = (Item)r;
+
+            r = Random.Range(0, 5);
+            item3 = (Item)r;
+
+            switch (item1)
+            {
+                case Item.Money:
+                    ui.textSelectItem1.text = "+100 Money";
+                    break;
+                case Item.Hp:
+                    ui.textSelectItem1.text = "+25% Hp";
+                    break;
+                case Item.Arrmor:
+                    ui.textSelectItem1.text = "+1 Arrmor";
+                    break;
+                case Item.Weapon:
+                    ui.textSelectItem1.text = "Gun";
+                    break;
+                case Item.Speed:
+                    ui.textSelectItem1.text = "+10% Speed";
+                    break;
+            }
+
+            switch (item2)
+            {
+                case Item.Money:
+                    ui.textSelectItem2.text = "+100 Money";
+                    break;
+                case Item.Hp:
+                    ui.textSelectItem2.text = "+25% Hp";
+                    break;
+                case Item.Arrmor:
+                    ui.textSelectItem2.text = "+1 Arrmor";
+                    break;
+                case Item.Weapon:
+                    ui.textSelectItem2.text = "Gun";
+                    break;
+                case Item.Speed:
+                    ui.textSelectItem2.text = "+10% Speed";
+                    break;
+            }
+
+            switch (item3)
+            {
+                case Item.Money:
+                    ui.textSelectItem3.text = "+100 Money";
+                    break;
+                case Item.Hp:
+                    ui.textSelectItem3.text = "+25% Hp";
+                    break;
+                case Item.Arrmor:
+                    ui.textSelectItem3.text = "+1 Arrmor";
+                    break;
+                case Item.Weapon:
+                    ui.textSelectItem3.text = "Gun";
+                    break;
+                case Item.Speed:
+                    ui.textSelectItem3.text = "+10% Speed";
+                    break;
+            }
+
+            yield return new WaitForSeconds(.1f);
+        }
+
+        t = .5f;
+
+        while (t > 0)
+        {
+            t -= .1f;
+
+            r = Random.Range(0, 5);
+            item2 = (Item)r;
+
+            r = Random.Range(0, 5);
+            item3 = (Item)r;
+
+            switch (item2)
+            {
+                case Item.Money:
+                    ui.textSelectItem2.text = "+100 Money";
+                    break;
+                case Item.Hp:
+                    ui.textSelectItem2.text = "+25% Hp";
+                    break;
+                case Item.Arrmor:
+                    ui.textSelectItem2.text = "+1 Arrmor";
+                    break;
+                case Item.Weapon:
+                    ui.textSelectItem2.text = "Gun";
+                    break;
+                case Item.Speed:
+                    ui.textSelectItem2.text = "+10% Speed";
+                    break;
+            }
+
+            switch (item3)
+            {
+                case Item.Money:
+                    ui.textSelectItem3.text = "+100 Money";
+                    break;
+                case Item.Hp:
+                    ui.textSelectItem3.text = "+25% Hp";
+                    break;
+                case Item.Arrmor:
+                    ui.textSelectItem3.text = "+1 Arrmor";
+                    break;
+                case Item.Weapon:
+                    ui.textSelectItem3.text = "Gun";
+                    break;
+                case Item.Speed:
+                    ui.textSelectItem3.text = "+10% Speed";
+                    break;
+            }
+
+            yield return new WaitForSeconds(.1f);
+        }
+
+        t = .5f;
+
+        while (t > 0)
+        {
+            t -= .1f;
+
+            r = Random.Range(0, 5);
+            item3 = (Item)r;
+
+            switch (item3)
+            {
+                case Item.Money:
+                    ui.textSelectItem3.text = "+100 Money";
+                    break;
+                case Item.Hp:
+                    ui.textSelectItem3.text = "+25% Hp";
+                    break;
+                case Item.Arrmor:
+                    ui.textSelectItem3.text = "+1 Arrmor";
+                    break;
+                case Item.Weapon:
+                    ui.textSelectItem3.text = "Gun";
+                    break;
+                case Item.Speed:
+                    ui.textSelectItem3.text = "+10% Speed";
+                    break;
+            }
+
+            yield return new WaitForSeconds(.1f);
+        }
+
+        rolling = false;
+    }
+    public void ShowSelectItem()
+    {
+        ui.panelSelectItem.SetActive(true);
+    }
+    public void HideSelectItem()
+    {
+        if (level.indexCurrentRound == 1)
+        {
+        }
+        else
+        {
+            Fade();
+        }
+        pause = false;
+        ui.panelSelectItem.SetActive(false);
+    }
+
+    public void ShakeCamera()
+    {
+        StartCoroutine(ShakeCamCo());
+    }
+
+    IEnumerator ShakeCamCo()
+    {
+        Vector3 p = Camera.main.transform.position;
+
+        float t = .5f;
+
+        while (t > 0)
+        {
+            t -= .1f;
+
+            Camera.main.transform.position = p + new Vector3(Random.Range(-.5f, .5f), Random.Range(-.5f, .5f), Random.Range(-.5f, .5f));
+
+            yield return new WaitForSeconds(Time.deltaTime);
+        }
+
+        Camera.main.transform.position = p;
     }
 
     public Vector3 QuaternionToEuler(Quaternion q)

@@ -16,6 +16,9 @@ public class PlayerMovement : MonoBehaviour
 
     public HealthBarUI healthUI;
 
+    public float maxArm;
+    public float arm;
+
     public float maxHp;
     public float hp;
 
@@ -32,8 +35,11 @@ public class PlayerMovement : MonoBehaviour
 
     void Start()
     {
-        Manager.manager.level.SetStart();
+        Manager.manager.SetStart();
         Manager.manager.pause = false;
+        Manager.manager.HideContract(3);
+
+        Manager.manager.RandomItem();
     }
 
     void Update()
@@ -104,6 +110,24 @@ public class PlayerMovement : MonoBehaviour
     {
         if (delayAttack <= 0)
         {
+            GameObject b = null;
+            switch (weapon)
+            {
+                case Weapon.Knife:
+                    break;
+                case Weapon.Sword:
+                    break;
+                case Weapon.Kunai:
+                    break;
+                case Weapon.Shuriken:
+                    break;
+                case Weapon.Gun:
+                    b = Instantiate(Resources.Load("Bullet") as GameObject, transform.position, Quaternion.identity);
+                    b.transform.DOMove(g.transform.position, .25f);
+                    break;
+            }
+            Destroy(b, .25f);
+
             delayAttack = 1;
             g.TakeDamage();
         }
@@ -111,7 +135,44 @@ public class PlayerMovement : MonoBehaviour
 
     public void TakeDamage(float dmg)
     {
-        hp -= dmg;
+        if (arm > 0)
+        {
+            arm -= dmg;
+            healthUI.SetImgArmor(arm/ maxArm);
+        }
+        else
+        {
+            hp -= dmg;
+            healthUI.SetImg(hp / maxHp);
+        }
+    }
+
+    public void TakeMoney()
+    {
+        Manager.manager.TakeMoney(1);
+    }
+
+    public void TakeHp()
+    {
+        hp = Mathf.Clamp(hp + 25, 0, 100);
         healthUI.SetImg(hp / maxHp);
+    }
+
+    public void TakeArmor()
+    {
+        arm = Mathf.Clamp(arm + 10, 0, 100);
+        healthUI.SetImgArmor(arm / maxArm);
+    }
+
+    public void TakeSpeed()
+    {
+        speed += .5f;
+    }
+
+    public void ResetStats()
+    {
+        arm = 0;
+        hp = 100;
+        speed = 5;
     }
 }

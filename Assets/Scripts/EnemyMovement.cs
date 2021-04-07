@@ -210,7 +210,19 @@ public class EnemyMovement : MonoBehaviour
 
     public void TakeDamage()
     {
+        Manager.manager.ShakeCamera();
+
+        for (int i = 0; i < 10; i++)
+        {
+            GameObject g = Instantiate(Resources.Load("Money") as GameObject, model.position, Quaternion.identity, GameObject.Find("Map").transform);
+            g.GetComponent<Rigidbody>().AddForce(new Vector3(Random.Range(-300f,300f),0,Random.Range(-300f, 300f)));
+        }
+
+        GameObject e = Instantiate(Resources.Load("Blood Effect") as GameObject, transform.position, Quaternion.identity);
+        Destroy(e, 1f);
+
         Manager.manager.CheckWinLevel();
+        Destroy(exclmationMark);
         Destroy(gameObject);
     }
 }

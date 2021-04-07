@@ -56,6 +56,7 @@
     <Analyzer Include="C:\Program Files (x86)\Microsoft Visual Studio Tools for Unity\16.0\Analyzers\Microsoft.Unity.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Scripts\UICanvas.cs" />
     <Compile Include="Assets\Scripts\BoxNext.cs" />
     <Compile Include="Assets\Scripts\EnemyMovement.cs" />
     <Compile Include="Assets\Scripts\Level.cs" />
@@ -64,7 +65,8 @@
     <Compile Include="Assets\Scripts\CameraMovement.cs" />
     <Compile Include="Assets\Scripts\Item.cs" />
     <Compile Include="Assets\Scripts\HealthBarUI.cs" />
-    <Compile Include="Assets\Scripts\UICanvas.cs" />
+    <Compile Include="Assets\Scripts\Money.cs" />
+    <Compile Include="Assets\Scripts\BossMovement.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">

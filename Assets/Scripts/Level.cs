@@ -26,9 +26,9 @@ public class Level : ScriptableObject
 
     public void SetStart()
     {
-        if(indexCurrentRound == 0)
+        if (indexCurrentRound == 0)
         {
-            Transform t = GameObject.Find("Process Level Content").transform;
+            Transform t = Manager.manager.ui.processLevelContent;
 
             foreach (Transform item in t)
             {
@@ -37,7 +37,7 @@ public class Level : ScriptableObject
 
             foreach (var item in typeRounds)
             {
-                if(item == TypeRound.Fight)
+                if (item == TypeRound.Fight)
                 {
                     GameObject g = Instantiate(Resources.Load("UI/Image Process Level Fight") as GameObject, t);
                 }
@@ -58,6 +58,7 @@ public class Level : ScriptableObject
         if (indexCurrentRound > maxRound)
         {
             Manager.manager.LoadNextLevel();
+            indexCurrentRound = 1;
         }
 
         win = false;
@@ -66,12 +67,26 @@ public class Level : ScriptableObject
 
         Manager.manager.SetTextRemainEnemy();
 
-        if (GameObject.Find("Map").transform.childCount > 0)
+        for (int i = 0; i < GameObject.Find("Map").transform.childCount; i++)
         {
-            Destroy(GameObject.Find("Map").transform.GetChild(0).gameObject);
+            Destroy(GameObject.Find("Map").transform.GetChild(i).gameObject);
         }
 
-        GameObject g = Instantiate(Resources.Load("Level/" + nameLevel+indexCurrentRound) as GameObject, GameObject.Find("Map").transform);
+        //if (GameObject.Find("Map").transform.childCount > 0)
+        //{
+        //    Destroy(GameObject.Find("Map").transform.GetChild(0).gameObject);
+        //}
+
+        if (typeRounds[indexCurrentRound-1] == TypeRound.Fight)
+        {
+            GameObject g = Instantiate(Resources.Load("Level/" + nameLevel + indexCurrentRound) as GameObject, GameObject.Find("Map").transform);
+        }
+        else
+        {
+            Manager.manager.selecNewItem = true;
+        }
+
+        Manager.manager.pause = false;
     }
 
     void OnEnable()

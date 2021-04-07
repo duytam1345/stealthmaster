@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cfa11eaad61970045ab9cd278f36a828, type: 3}
+  m_Name: Level_2
+  m_EditorClassIdentifier: 
+  nameLevel: Second
+  typeRounds: 000000000000000000000000
+  startRemainEnemy: 020000000300000003000000
+  remainEnemy: 0
+  hasBoss: 1
+  maxRound: 2
+  indexCurrentRound: 2
+  win: 0

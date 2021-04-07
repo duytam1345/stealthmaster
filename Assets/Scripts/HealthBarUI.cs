@@ -9,12 +9,15 @@ public class HealthBarUI : MonoBehaviour
 
     Image img;
 
+    Image imgArm;
+
     RectTransform rect;
 
     void Start()
     {
         rect = GetComponent<RectTransform>();
         img = transform.GetChild(1).GetComponent<Image>();
+        imgArm = transform.GetChild(2).GetComponent<Image>();
     }
 
     void LateUpdate()
@@ -25,5 +28,10 @@ public class HealthBarUI : MonoBehaviour
     public void SetImg(float amount)
     {
         img.fillAmount = amount;
+    }
+
+    public void SetImgArmor(float amount)
+    {
+        imgArm.fillAmount = amount;
     }
 }
