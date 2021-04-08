@@ -57,7 +57,22 @@ public class Manager : MonoBehaviour
 
             if (level.remainEnemy <= 0)
             {
-                OpenDoor();
+                if (level != levels[0])
+                {
+                    if (level.indexCurrentRound == level.maxRound)
+                    {
+                        ui.panelBossWasKilled.SetActive(true);
+                        ui.nextLevelButton.SetActive(true);
+                    }
+                    else
+                    {
+                        OpenDoor();
+                    }
+                }
+                else
+                {
+                    OpenDoor();
+                }
             }
         }
     }
@@ -129,7 +144,7 @@ public class Manager : MonoBehaviour
 
     IEnumerator LoadNextLevelCo()
     {
-        if (level.nameLevel == "First")
+        if (level.nameLevel == "Tutorial")
         {
             ui.panelTutorialComplete.SetActive(true);
         }
@@ -153,13 +168,21 @@ public class Manager : MonoBehaviour
         img.DOFade(1, 1);
         yield return new WaitForSeconds(1); //fade out
 
+        for (int i = 0; i < GameObject.Find("Trash").transform.childCount; i++)
+        {
+            Destroy(GameObject.Find("Trash").transform.GetChild(i).gameObject);
+        }
+
         level.SetNewRound();
 
         FindObjectOfType<PlayerMovement>().transform.position = new Vector3(0, .5f, -8.5f);
 
         yield return new WaitForSeconds(.5f);//reset map time
 
+        ui.panelTutorialComplete.SetActive(false);
         ui.nextLevelButton.SetActive(false);
+        ui.panelBossWasKilled.SetActive(false);
+        ui.panelPlayAgain.SetActive(false);
 
         img.DOFade(0, 1);
         yield return new WaitForSeconds(1);//fade in
@@ -217,6 +240,7 @@ public class Manager : MonoBehaviour
             if (b)
             {
                 level = item;
+                level.SetStart();
                 return;
             }
 
@@ -432,6 +456,17 @@ public class Manager : MonoBehaviour
         }
         pause = false;
         ui.panelSelectItem.SetActive(false);
+    }
+
+    public void PlayerDeath()
+    {
+        PlayerMovement p = FindObjectOfType<PlayerMovement>();
+
+        p.hp = 100;
+        p.healthUI.SetImg(p.hp / p.maxHp);
+
+        pause = true;
+        ui.panelPlayAgain.SetActive(true);
     }
 
     public void ShakeCamera()

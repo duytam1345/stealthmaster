@@ -12,11 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cfa11eaad61970045ab9cd278f36a828, type: 3}
   m_Name: Level_2
   m_EditorClassIdentifier: 
-  nameLevel: Second
-  typeRounds: 000000000000000000000000
-  startRemainEnemy: 020000000300000003000000
+  nameLevel: First Target
+  typeRounds: 00000000000000000000000000000000
+  startRemainEnemy: 03000000040000000500000001000000
   remainEnemy: 0
   hasBoss: 1
-  maxRound: 2
-  indexCurrentRound: 2
+  maxRound: 4
+  indexCurrentRound: 0
   win: 0

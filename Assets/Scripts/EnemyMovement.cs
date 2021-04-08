@@ -47,9 +47,9 @@ public class EnemyMovement : MonoBehaviour
 
         player = FindObjectOfType<PlayerMovement>();
 
-        if (!exclmationMark)
+        if (exclmationMark == null)
         {
-            exclmationMark = Instantiate(Resources.Load("exclmation mark") as GameObject, GameObject.Find("Canvas").transform);
+            exclmationMark = Instantiate(Resources.Load("exclmation mark") as GameObject, GameObject.Find("Trash").transform);
         }
         exclmationMark.SetActive(false);
     }
@@ -87,7 +87,7 @@ public class EnemyMovement : MonoBehaviour
 
     void Move()
     {
-        if(wayPoints.Count<=0)
+        if (wayPoints.Count <= 0)
         {
             return;
         }
@@ -147,16 +147,21 @@ public class EnemyMovement : MonoBehaviour
             Vector3 dirToTarget = (item.transform.position - model.position).normalized;
             if (Vector3.Angle(model.forward, dirToTarget) < 90 / 2)
             {
-                if (spriteSight.color != Color.red)
+                float distance = Vector3.Distance(model.position, item.transform.position);
+                if (!Physics.Raycast(model.position, dirToTarget, distance, 1 << 9))
                 {
-                    spriteSight.color = Color.red;
+
+                    if (spriteSight.color != Color.red)
+                    {
+                        spriteSight.color = Color.red;
+                    }
+
+                    typeMoveEnemy = TypeMoveEnemy.MoveToLastPosPlayer;
+
+                    lastPosPlayerFinded = item.transform.position;
+
+                    return;
                 }
-
-                typeMoveEnemy = TypeMoveEnemy.MoveToLastPosPlayer;
-
-                lastPosPlayerFinded = item.transform.position;
-
-                return;
             }
         }
         if (spriteSight.color != Color.white)
@@ -204,6 +209,7 @@ public class EnemyMovement : MonoBehaviour
         if (delayAttack <= 0)
         {
             delayAttack = .5f;
+
             player.TakeDamage(10);
         }
     }
@@ -215,10 +221,10 @@ public class EnemyMovement : MonoBehaviour
         for (int i = 0; i < 10; i++)
         {
             GameObject g = Instantiate(Resources.Load("Money") as GameObject, model.position, Quaternion.identity, GameObject.Find("Map").transform);
-            g.GetComponent<Rigidbody>().AddForce(new Vector3(Random.Range(-300f,300f),0,Random.Range(-300f, 300f)));
+            g.GetComponent<Rigidbody>().AddForce(new Vector3(Random.Range(-300f, 300f), 0, Random.Range(-300f, 300f)));
         }
 
-        GameObject e = Instantiate(Resources.Load("Blood Effect") as GameObject, transform.position, Quaternion.identity);
+        GameObject e = Instantiate(Resources.Load("Blood Effect") as GameObject, model.position, Quaternion.identity);
         Destroy(e, 1f);
 
         Manager.manager.CheckWinLevel();

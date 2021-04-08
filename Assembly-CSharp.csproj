@@ -58,15 +58,16 @@
   <ItemGroup>
     <Compile Include="Assets\Scripts\UICanvas.cs" />
     <Compile Include="Assets\Scripts\BoxNext.cs" />
+    <Compile Include="Assets\Scripts\BossMovement.cs" />
     <Compile Include="Assets\Scripts\EnemyMovement.cs" />
     <Compile Include="Assets\Scripts\Level.cs" />
     <Compile Include="Assets\Scripts\PlayerMovement.cs" />
+    <Compile Include="Assets\Scripts\Money.cs" />
     <Compile Include="Assets\Scripts\Manager.cs" />
     <Compile Include="Assets\Scripts\CameraMovement.cs" />
     <Compile Include="Assets\Scripts\Item.cs" />
     <Compile Include="Assets\Scripts\HealthBarUI.cs" />
-    <Compile Include="Assets\Scripts\Money.cs" />
-    <Compile Include="Assets\Scripts\BossMovement.cs" />
+    <Compile Include="Assets\Scripts\BulletOfEnemy.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">

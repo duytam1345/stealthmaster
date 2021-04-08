@@ -9,9 +9,14 @@ public class UICanvas : MonoBehaviour
 
     public GameObject panelTutorialComplete;
 
+    public GameObject panelBossWasKilled;
+
+    public GameObject panelPlayAgain;
+
     public Text textMoney;
 
     public GameObject panelContract;
+    public Text textContract;
 
     public Transform processLevelContent;
 
@@ -53,5 +58,11 @@ public class UICanvas : MonoBehaviour
         }
 
         Manager.manager.HideSelectItem();
+    }
+
+    public void PlayAgain()
+    {
+        Manager.manager.level.indexCurrentRound = 0;
+        Manager.manager.Fade();
     }
 }

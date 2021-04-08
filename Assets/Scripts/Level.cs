@@ -35,6 +35,8 @@ public class Level : ScriptableObject
                 Destroy(item.gameObject);
             }
 
+            Manager.manager.ui.textContract.text = nameLevel;
+
             foreach (var item in typeRounds)
             {
                 if (item == TypeRound.Fight)
@@ -58,7 +60,7 @@ public class Level : ScriptableObject
         if (indexCurrentRound > maxRound)
         {
             Manager.manager.LoadNextLevel();
-            indexCurrentRound = 1;
+            return;
         }
 
         win = false;

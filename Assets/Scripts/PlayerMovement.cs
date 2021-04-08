@@ -102,7 +102,14 @@ public class PlayerMovement : MonoBehaviour
         Collider[] colliders = Physics.OverlapSphere(transform.position, range, 1 << 7);
         if (colliders.Length > 0)
         {
-            Attack(colliders[0].GetComponentInParent<EnemyMovement>());
+            if (colliders[0].GetComponentInParent<EnemyMovement>())
+            {
+                Attack(colliders[0].GetComponentInParent<EnemyMovement>());
+            }
+            else if (colliders[0].GetComponentInParent<BossMovement>())
+            {
+                Attack(colliders[0].GetComponentInParent<BossMovement>());
+            }
         }
     }
 
@@ -133,17 +140,53 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    void Attack(BossMovement g)
+    {
+        if (delayAttack <= 0)
+        {
+            GameObject b = null;
+            switch (weapon)
+            {
+                case Weapon.Knife:
+                    break;
+                case Weapon.Sword:
+                    break;
+                case Weapon.Kunai:
+                    break;
+                case Weapon.Shuriken:
+                    break;
+                case Weapon.Gun:
+                    b = Instantiate(Resources.Load("Bullet") as GameObject, transform.position, Quaternion.identity);
+                    b.transform.DOMove(g.transform.position, .25f);
+                    break;
+            }
+            Destroy(b, .25f);
+
+            delayAttack = 1;
+            g.TakeDamage();
+        }
+    }
+
     public void TakeDamage(float dmg)
     {
-        if (arm > 0)
+        if (!Manager.manager.pause)
         {
-            arm -= dmg;
-            healthUI.SetImgArmor(arm/ maxArm);
-        }
-        else
-        {
-            hp -= dmg;
-            healthUI.SetImg(hp / maxHp);
+
+            if (arm > 0)
+            {
+                arm -= dmg;
+                healthUI.SetImgArmor(arm / maxArm);
+            }
+            else
+            {
+                hp -= dmg;
+                healthUI.SetImg(hp / maxHp);
+            }
+
+            if (hp <= 0)
+            {
+                Manager.manager.PlayerDeath();
+            }
         }
     }
 
